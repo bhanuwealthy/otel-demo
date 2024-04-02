@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose --file ../local-setup/local-dockercompose.yaml convert --profile all
+    kompose.version: 1.32.0 (HEAD)
+  labels:
+    io.kompose.service: redis
+  name: redis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: redis
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose --file ../local-setup/local-dockercompose.yaml convert --profile all
+        kompose.version: 1.32.0 (HEAD)
+      labels:
+        io.kompose.network/local-setup-my-network: "true"
+        io.kompose.service: redis
+    spec:
+      containers:
+        - image: redis:latest
+          name: otel-redis
+          ports:
+            - containerPort: 6379
+              hostPort: 6379
+              protocol: TCP
+      restartPolicy: Always

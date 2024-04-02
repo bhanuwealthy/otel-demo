@@ -1,0 +1,32 @@
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: otelcol:4317
+exporters:
+  logging:
+    verbosity: basic
+  debug:
+    verbosity: basic
+  otlp/tempo:  # working
+    endpoint : tempo:4317                         # grafana-tempo   : spans receiver
+    tls:
+      insecure: true
+  otlphttp/victoria:
+    metrics_endpoint: http://victoria:8428/opentelemetry/api/v1/push  # victoria-metrics: metrics receiver
+    tls:
+      insecure: true
+
+extensions:
+processors:
+  batch:
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [debug, otlp/tempo]  # figure-out which is working: otlp or otlphttp
+    metrics:  # commenting this creates Transient error StatusCode.UNAVAILABLE encountered while exporting metrics to 127.0.0.1:4317
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [debug, otlphttp/victoria]

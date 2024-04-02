@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose --file ../local-setup/local-dockercompose.yaml convert --profile all
+    kompose.version: 1.32.0 (HEAD)
+  labels:
+    io.kompose.service: victoria
+  name: victoria
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: victoria
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose --file ../local-setup/local-dockercompose.yaml convert --profile all
+        kompose.version: 1.32.0 (HEAD)
+      labels:
+        io.kompose.network/local-setup-my-network: "true"
+        io.kompose.service: victoria
+    spec:
+      containers:
+        - image: victoriametrics/victoria-metrics:v1.96.0
+          name: otel-victoria
+          ports:
+            - containerPort: 8428
+              hostPort: 8428
+              protocol: TCP
+      restartPolicy: Always

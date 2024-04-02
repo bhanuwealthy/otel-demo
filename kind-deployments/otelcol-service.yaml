@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kompose.cmd: kompose --file ../local-setup/local-dockercompose.yaml convert --profile all
+    kompose.version: 1.32.0 (HEAD)
+  labels:
+    io.kompose.service: otelcol
+  name: otelcol
+spec:
+  ports:
+    - name: "otel-col"
+      port: 4317
+      targetPort: 4317
+  selector:
+    io.kompose.service: otelcol

@@ -1,0 +1,40 @@
+site_name: AwesomeEngineering
+
+extra:
+  generator: false
+      
+
+theme:
+  language: en 
+  font:
+      text: Google Sans
+      code: Roboto Mono
+  name: 'material'
+  palette:
+    primary: '#2196f3'
+  features:
+    - navigation.footer
+    - navigation.prune
+    - navigation.path
+    - navigation.instant
+    - navigation.tracking
+    - navigation.instant.preview
+    - navigation.instant.progress
+    - navigation.instant.prefetch
+    
+
+markdown_extensions:
+  - abbr
+  - admonition
+  - attr_list
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+  - pymdownx.arithmatex:
+      generic: true
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format

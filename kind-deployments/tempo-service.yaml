@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kompose.cmd: kompose --file ../local-setup/local-dockercompose.yaml convert --profile all
+    kompose.version: 1.32.0 (HEAD)
+  labels:
+    io.kompose.service: tempo
+  name: tempo
+spec:
+  ports:
+    - name: "3200"
+      port: 3200
+      targetPort: 3200
+    - name: "9095"
+      port: 9095
+      targetPort: 9095
+    - name: "4317"
+      port: 4317
+      targetPort: 4317
+    - name: "4008"
+      port: 4008
+      targetPort: 4318
+  selector:
+    io.kompose.service: tempo

@@ -1,0 +1,123 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: tempo-traces-configmap
+  labels:
+    app: opentelemetry-tempo
+    component: otel-traces
+data:
+  tempo-config: |
+      stream_over_http_enabled: true
+      server:
+        http_listen_port: 3200
+        log_level: info
+
+      query_frontend:
+        search:
+          duration_slo: 5s
+          throughput_bytes_slo: 1.073741824e+09
+        trace_by_id:
+          duration_slo: 5s
+
+      distributor:
+        receivers:                           # this configuration will listen on all ports and protocols that tempo is capable of.
+          jaeger:                            # the receives all come from the OpenTelemetry collector.  more configuration information can
+            protocols:                       # be found there: https://github.com/open-telemetry/opentelemetry-collector/tree/main/receiver
+              thrift_http:                   #
+              grpc:                          # for a production deployment you should only enable the receivers you need!
+              thrift_binary:
+              thrift_compact:
+          zipkin:
+          otlp:
+            protocols:
+              http:
+              grpc:
+          opencensus:
+
+      ingester:
+        max_block_duration: 5m               # cut the head-block when this much time passes. this is being set for demo purposes and should probably be left alone normally
+
+      compactor:
+        compaction:
+          block_retention: 24h                # overall Tempo trace retention. set for demo purposes
+
+      storage:
+        trace:
+          backend: local                     # backend configuration to use
+          wal:
+            path: /tmp/tempo/wal             # where to store the wal locally
+          local:
+            path: /tmp/tempo/blocks
+
+      metrics_generator:
+        registry:
+          external_labels:
+            source: tempo
+            cluster: docker-compose
+        storage:
+          path: /tmp/tempo/generator/wal
+          remote_write:  # tempo generates some metrics during the process and push to some metric receiver
+            - url: http://victoria:8428/api/v1/write  # <-- working
+              send_exemplars: true
+
+      overrides:
+        defaults:
+          metrics_generator:
+            processors: [service-graphs, span-metrics] # enables metrics generator
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose --file ../local-setup/local-dockercompose.yaml convert --profile all
+    kompose.version: 1.32.0 (HEAD)
+  labels:
+    io.kompose.service: tempo
+  name: tempo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: tempo
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose --file ../local-setup/local-dockercompose.yaml convert --profile all
+        kompose.version: 1.32.0 (HEAD)
+      labels:
+        io.kompose.network/local-setup-my-network: "true"
+        io.kompose.service: tempo
+    spec:
+      containers:
+        - command: ["/tempo"]
+          args: ["-config.file=/etc/conf/tempo.yaml"]
+          image: grafana/tempo:latest
+          name: otel-tempo
+          ports:
+            - containerPort: 3200
+              hostPort: 3200
+              protocol: TCP
+            - containerPort: 9095
+              hostPort: 9095
+              protocol: TCP
+            - containerPort: 4317
+              hostPort: 4007
+              protocol: TCP
+            - containerPort: 4318
+              hostPort: 4008
+              protocol: TCP
+          volumeMounts:
+            - mountPath: /etc/conf
+              name: tempo-vol0
+      restartPolicy: Always
+      volumes:
+        - name: tempo-vol0
+          configMap:
+            name: tempo-traces-configmap
+            items:
+            - key: tempo-config
+              path: tempo.yaml

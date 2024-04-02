@@ -1,0 +1,114 @@
+# For this project to be up & running, "--profile db" is sufficient.
+# docker-compose -f docker/local-dockercompose.yaml -p otel-project --profile db up
+
+# Carefully use "--profile" flags to run specific services.
+# --profile db    #<---- for db only
+# --profile otel  #<---- for otel only
+# --profile all   #<---- if you want to run all containers.
+
+version: '3.9'
+
+services:
+  # Database
+  redis:
+    container_name: otel-redis
+    profiles:
+      - db
+      - all
+    image: "redis:latest"
+    ports:
+      - "6379:6379"
+    networks:
+      - my_network
+
+  mongodb:
+    container_name: otel-mongodb
+    profiles:
+      - db
+      - all
+    image: "mongo:latest"
+    environment:
+      MONGO_INITDB_DATABASE: demoDb
+    ports:
+      - "27017:27017"
+    networks:
+      - my_network
+    volumes:
+      - ./local-mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js
+      - type: bind
+        source: $HOME/projects/$MONGO_ROOT
+        target: /data/db
+
+
+  # Collector
+  otelcol:
+    container_name: otel-otelcol
+    profiles:
+      - otel
+      - all
+    image: otel/opentelemetry-collector:0.91.0
+    command: [ "--config=/etc/otel-collector-config.yaml" ]
+    networks:
+      - my_network
+    volumes:
+      - ./otel-collector-config.yaml:/etc/otel-collector-config.yaml
+    ports:
+      - "4317:4317"   # OTLP gRPC receiver
+    depends_on:
+      - tempo
+      - victoria
+
+  victoria:
+    container_name: otel-victoria
+    profiles:
+      - otel
+      - all
+    image: victoriametrics/victoria-metrics:v1.96.0
+    ports:
+      - "8428:8428"
+    networks:
+      - my_network
+
+  tempo:
+    container_name: otel-tempo
+    profiles:
+      - otel
+      - all
+    image: grafana/tempo:latest
+    command: [ "-config.file=/etc/tempo.yaml" ]
+    networks:
+      - my_network
+    volumes:
+      - ./tempo.yaml:/etc/tempo.yaml
+      - type: bind
+        source: $HOME/projects/tempo-data
+        target: /tmp/tempo
+    ports:
+      - "3200:3200"     # tempo data-source http
+      - "9095:9095"     # tempo data-source grpc
+      - "4007:4317"     # otlp grpc
+      - "4008:4318"     # otlp http
+
+  grafana:
+    profiles:
+      - otel
+      - all
+    container_name: otel-grafana
+    image: grafana/grafana:10.1.1
+    networks:
+      - my_network
+    volumes:
+      - ./grafana-datasources.yaml:/etc/grafana/provisioning/datasources/datasources.yaml
+    environment:
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+      - GF_AUTH_DISABLE_LOGIN_FORM=true
+      - GF_FEATURE_TOGGLES_ENABLE=traceqlEditor
+    ports:
+      - "3000:3000"
+    depends_on:
+      - victoria  # at least 1 data-source
+
+networks:
+  my_network:
+    driver: bridge

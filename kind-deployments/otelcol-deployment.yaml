@@ -1,0 +1,88 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: otelcol-configmap
+  labels:
+    app: opentelemetry-col
+    component: otel
+data:
+  collector-conf: |
+      receivers:
+        otlp:
+          protocols:
+            grpc: 
+      exporters:
+        logging:
+          verbosity: basic
+        debug:
+          verbosity: basic
+        otlp/tempo:  # working
+          endpoint : tempo:4317                         # grafana-tempo   : spans receiver
+          tls:
+            insecure: true
+        otlphttp/victoria:
+          metrics_endpoint: http://victoria:8428/opentelemetry/api/v1/push  # victoria-metrics: metrics receiver
+          tls:
+            insecure: true
+
+      extensions:
+      processors:
+        batch:
+      service:
+        pipelines:
+          traces:
+            receivers: [otlp]
+            processors: [batch]
+            exporters: [debug, otlp/tempo]  # figure-out which is working: otlp or otlphttp
+          metrics:  # commenting this creates Transient error StatusCode.UNAVAILABLE encountered while exporting metrics to 127.0.0.1:4317
+            receivers: [otlp]
+            processors: [batch]
+            exporters: [debug, otlphttp/victoria]
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose --file ../local-setup/local-dockercompose.yaml convert --profile all
+    kompose.version: 1.32.0 (HEAD)
+  labels:
+    io.kompose.service: otelcol
+  name: otelcol
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: otelcol
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose --file ../local-setup/local-dockercompose.yaml convert --profile all
+        kompose.version: 1.32.0 (HEAD)
+      labels:
+        io.kompose.network/local-setup-my-network: "true"
+        io.kompose.service: otelcol
+    spec:
+      containers:
+        - command:
+            - "/otelcol"
+            - "--config=/etc/conf/otel-collector-config.yaml"
+          name: otel-otelcol
+          image: otel/opentelemetry-collector:0.91.0
+          ports:
+            - containerPort: 4317
+              hostPort: 4317
+              protocol: TCP
+          volumeMounts:
+            - mountPath: /etc/conf
+              name: otelcol-claim0
+      restartPolicy: Always
+      volumes:
+        - name: otelcol-claim0
+          configMap:
+            name: otelcol-configmap
+            items:
+            - key: collector-conf
+              path: otel-collector-config.yaml
