@@ -1,17 +1,19 @@
-site_name: AwesomeEngineering
+site_name: AwesomeEngineering:S1E2 OpenTelemetry
 
 extra:
   generator: false
-      
+
 
 theme:
+  logo: assets/wealthy-logo.png
+  favicon: assets/wealthy-logo.png
   language: en 
   font:
       text: Google Sans
       code: Roboto Mono
   name: 'material'
   palette:
-    primary: '#2196f3'
+    primary: 'black'
   features:
     - navigation.footer
     - navigation.prune

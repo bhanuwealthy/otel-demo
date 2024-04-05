@@ -36,6 +36,8 @@ data:
           httpMethod: GET
           serviceMap:
             datasourceUid: prometheus
+          nodeGraph:
+            enabled: true
 
 
 

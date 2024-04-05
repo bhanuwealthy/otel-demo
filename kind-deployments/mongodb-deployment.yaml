@@ -1,86 +1,86 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: mognodb-configmap
-  labels:
-    app: my-app
-    component: db
-data:
-  init-conf: | 
-      var otel_db = db.getSiblingDB('demoDb');
-      db.createUser({
-        user: 'otel',
-        pwd: 'otel',
-        roles: [
-          {
-            role: 'readWrite',
-            db: 'demoDb'
-          }
-        ]
-      });
+# apiVersion: v1
+# kind: ConfigMap
+# metadata:
+#   name: mognodb-configmap
+#   labels:
+#     app: my-app
+#     component: db
+# data:
+#   init-conf: | 
+#       var otel_db = db.getSiblingDB('demoDb');
+#       db.createUser({
+#         user: 'otel',
+#         pwd: 'otel',
+#         roles: [
+#           {
+#             role: 'readWrite',
+#             db: 'demoDb'
+#           }
+#         ]
+#       });
 
-      otel_db.createCollection('otel_tenants');
+#       otel_db.createCollection('otel_tenants');
 
 
-      // Check if 'Tenant 1' already exists in the 'tenants' collection
-      var existingTenant = otel_db.otel_tenants.findOne({ client_id: 'tonystark' });
+#       // Check if 'Tenant 1' already exists in the 'tenants' collection
+#       var existingTenant = otel_db.otel_tenants.findOne({ client_id: 'tonystark' });
 
-      // If 'Tenant 1' does not exist, insert it
-      if (!existingTenant) {
-        otel_db.otel_tenants.insert({
-          client_id: 'tonystark',
-          secret_key: 'jarvis',
-          client_name: 'Local' });
-      }
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  annotations:
-    kompose.cmd: kompose --file ../local-setup/local-dockercompose.yaml convert --profile all
-    kompose.version: 1.32.0 (HEAD)
-  labels:
-    io.kompose.service: mongodb
-  name: mongodb
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      io.kompose.service: mongodb
-  strategy:
-    type: Recreate
-  template:
-    metadata:
-      annotations:
-        kompose.cmd: kompose --file ../local-setup/local-dockercompose.yaml convert --profile all
-        kompose.version: 1.32.0 (HEAD)
-      labels:
-        io.kompose.network/local-setup-my-network: "true"
-        io.kompose.service: mongodb
-    spec:
-      containers:
-        - env:
-            - name: MONGO_INITDB_DATABASE
-              value: demoDb
-          image: mongo:latest
-          name: otel-mongodb
-          ports:
-            - containerPort: 27017
-              hostPort: 27017
-              protocol: TCP
-          volumeMounts:
-            - mountPath: /docker-entrypoint-initdb.d
-              name: mongodb-vol0
-            - mountPath: /data/db
-              name: mongodb-claim0
-      restartPolicy: Always
-      volumes:
-        - name: mongodb-vol0
-          configMap:
-            name: mognodb-configmap
-            items:
-            - key: init-conf
-              path: datasources.yaml
-        - name: mongodb-claim0
-          persistentVolumeClaim:
-            claimName: mongodb-claim0
+#       // If 'Tenant 1' does not exist, insert it
+#       if (!existingTenant) {
+#         otel_db.otel_tenants.insert({
+#           client_id: 'tonystark',
+#           secret_key: 'jarvis',
+#           client_name: 'Local' });
+#       }
+# ---
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   annotations:
+#     kompose.cmd: kompose --file ../local-setup/local-dockercompose.yaml convert --profile all
+#     kompose.version: 1.32.0 (HEAD)
+#   labels:
+#     io.kompose.service: mongodb
+#   name: mongodb
+# spec:
+#   replicas: 1
+#   selector:
+#     matchLabels:
+#       io.kompose.service: mongodb
+#   strategy:
+#     type: Recreate
+#   template:
+#     metadata:
+#       annotations:
+#         kompose.cmd: kompose --file ../local-setup/local-dockercompose.yaml convert --profile all
+#         kompose.version: 1.32.0 (HEAD)
+#       labels:
+#         io.kompose.network/local-setup-my-network: "true"
+#         io.kompose.service: mongodb
+#     spec:
+#       containers:
+#         - env:
+#             - name: MONGO_INITDB_DATABASE
+#               value: demoDb
+#           image: mongo:latest
+#           name: otel-mongodb
+#           ports:
+#             - containerPort: 27017
+#               hostPort: 27017
+#               protocol: TCP
+#           volumeMounts:
+#             - mountPath: /docker-entrypoint-initdb.d
+#               name: mongodb-vol0
+#             - mountPath: /data/db
+#               name: mongodb-claim0
+#       restartPolicy: Always
+#       volumes:
+#         - name: mongodb-vol0
+#           configMap:
+#             name: mognodb-configmap
+#             items:
+#             - key: init-conf
+#               path: datasources.yaml
+#         - name: mongodb-claim0
+#           persistentVolumeClaim:
+#             claimName: mongodb-claim0

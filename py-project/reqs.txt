@@ -1,0 +1,21 @@
+# App
+fastapi
+uvicorn
+requests
+redis
+
+# Base
+opentelemetry-api
+opentelemetry-sdk
+
+# Instrumentors
+opentelemetry-instrumentation-fastapi
+opentelemetry-instrumentation-redis
+opentelemetry-instrumentation-requests
+opentelemetry-instrumentation-urllib3
+
+# Exporters
+opentelemetry-exporter-otlp
+# Base otlp exporters installs the following
+#  opentelemetry-exporter-otlp-proto-grpc
+#  opentelemetry-exporter-otlp-proto-http
