@@ -1,6 +1,9 @@
-# otel-demo
-Golang otel-demo
+# run services
+```sheel
+source ./order/.env
+go run ./order
 
-```
-make run
+source ./user/.env
+go run ./user
+
 ```
