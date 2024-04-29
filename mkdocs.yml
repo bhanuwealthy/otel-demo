@@ -1,10 +1,15 @@
-site_name: AwesomeEngineering:S1E2 OpenTelemetry
+site_name: AwesomeEngineering:Ep2 OpenTelemetry for seamless Observability
+site_url: https://bhanuwealthy.github.io/otel-demo/
+repo_url: https://github.com/bhanuwealthy/otel-demo
+repo_name: bhanuwealthy/otel-demo
 
 extra:
   generator: false
 
 
 theme:
+  icon:
+    repo: fontawesome/brands/github-alt
   logo: assets/wealthy-logo.png
   favicon: assets/wealthy-logo.png
   language: en 

@@ -17,10 +17,12 @@
 - KinD   cluster mode
 
 
-## 1. Docker compose mode
+## 1.Docker compose mode
 ```shell
 $ make otel
 ```
+
+---
 
 ## 2. Kubernetes mode
 
@@ -30,15 +32,7 @@ $ make otel
 > 
 > Instead use  Docker-desktop
 
-### Transform `docker-compose -> deployments`
-```shell
-$ mkdir kind-deployments
-$ cd kind-deployments
-$ MONGO_ROOT=dummy \
-  kompose --file ../local-setup/local-dockercompose.yaml \
-  convert --profile all
-```
-### KinD
+### 1.KinD
 ```yaml
 $ cat local-setup/local-cluster.yaml
 
@@ -53,14 +47,14 @@ nodes:
 - role: worker
 ```
 
-### Local alias
+### 2.Local alias
 ```shell
 alias ktl="kubectl"
 alias kctx="kubectx"
 ```
 
 
-### Create a  cluster
+### 3.Create a  cluster
 ```
 $ kind create cluster \
   --config local-setup/local-cluster.yaml \
@@ -73,13 +67,13 @@ wealthy
 ```
 
 
-### Deploy
+### 4.Deploy
 ```
 ktl create ns otel
 ktl -n otel apply -f kind-deployments
 ```
 
-### Port forward for local-access
+### 5.Port forward for local-access
 ```
 $ ktl get svc -n otel
 
@@ -91,7 +85,7 @@ $ lsof -i:3000 -t | xargs kill -9
 $ lsof -i:4317 -t | xargs kill -9
 ```
 
-### Standalone services
+### 6.Standalone services
 ```shell
 # python-app
 $ cd py-project
@@ -117,7 +111,7 @@ $ curl -s http://localhost:8080/api/ping/ | jq
 
 ```
 
-### Auto instrumentation
+### 7.Auto instrumentation
 ```
 # Load generator
 $ ktl apply -f https://raw.githubusercontent.com/keyval-dev/simple-demo/main/kubernetes/deployment.yaml
@@ -132,15 +126,27 @@ $ odigos ui
 # Close odigos
 ```
 
-### Check traces
+### 8.Check traces
 ```
 OpenLens ->  GrafanaPod -> Auto open portForward
 ``` 
 
-### Cleanup 
+### 9.Cleanup 
 ```
 $ ktl delete ns otel
 
 $ kind delete cluster --name otel-demo-cluster
+```
+
+---
+
+### Transform `docker-compose -> deployments` 
+> Already in-place
+```shell
+$ mkdir kind-deployments
+$ cd kind-deployments
+$ MONGO_ROOT=dummy \
+  kompose --file ../local-setup/local-dockercompose.yaml \
+  convert --profile all
 ```
 
