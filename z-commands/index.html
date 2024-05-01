@@ -1,0 +1,928 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://bhanuwealthy.github.io/otel-demo/z-commands/">
+      
+      
+        <link rel="prev" href="../5.tuning-otel-comp/">
+      
+      
+      
+      <link rel="icon" href="../assets/wealthy-logo.png">
+      <meta name="generator" content="mkdocs-1.6.0, mkdocs-material-9.5.20">
+    
+    
+      
+        <title>Z commands - AwesomeEngineering:Ep2 OpenTelemetry for seamless Observability</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.66ac8b77.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Google+Sans:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Google Sans";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="black" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#available-in-2-modes" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="AwesomeEngineering:Ep2 OpenTelemetry for seamless Observability" class="md-header__button md-logo" aria-label="AwesomeEngineering:Ep2 OpenTelemetry for seamless Observability" data-md-component="logo">
+      
+  <img src="../assets/wealthy-logo.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            AwesomeEngineering:Ep2 OpenTelemetry for seamless Observability
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Z commands
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/bhanuwealthy/otel-demo" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 512"><!--! Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M186.1 328.7c0 20.9-10.9 55.1-36.7 55.1s-36.7-34.2-36.7-55.1 10.9-55.1 36.7-55.1 36.7 34.2 36.7 55.1zM480 278.2c0 31.9-3.2 65.7-17.5 95-37.9 76.6-142.1 74.8-216.7 74.8-75.8 0-186.2 2.7-225.6-74.8-14.6-29-20.2-63.1-20.2-95 0-41.9 13.9-81.5 41.5-113.6-5.2-15.8-7.7-32.4-7.7-48.8 0-21.5 4.9-32.3 14.6-51.8 45.3 0 74.3 9 108.8 36 29-6.9 58.8-10 88.7-10 27 0 54.2 2.9 80.4 9.2 34-26.7 63-35.2 107.8-35.2 9.8 19.5 14.6 30.3 14.6 51.8 0 16.4-2.6 32.7-7.7 48.2 27.5 32.4 39 72.3 39 114.2zm-64.3 50.5c0-43.9-26.7-82.6-73.5-82.6-18.9 0-37 3.4-56 6-14.9 2.3-29.8 3.2-45.1 3.2-15.2 0-30.1-.9-45.1-3.2-18.7-2.6-37-6-56-6-46.8 0-73.5 38.7-73.5 82.6 0 87.8 80.4 101.3 150.4 101.3h48.2c70.3 0 150.6-13.4 150.6-101.3zm-82.6-55.1c-25.8 0-36.7 34.2-36.7 55.1s10.9 55.1 36.7 55.1 36.7-34.2 36.7-55.1-10.9-55.1-36.7-55.1z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    bhanuwealthy/otel-demo
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="AwesomeEngineering:Ep2 OpenTelemetry for seamless Observability" class="md-nav__button md-logo" aria-label="AwesomeEngineering:Ep2 OpenTelemetry for seamless Observability" data-md-component="logo">
+      
+  <img src="../assets/wealthy-logo.png" alt="logo">
+
+    </a>
+    AwesomeEngineering:Ep2 OpenTelemetry for seamless Observability
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/bhanuwealthy/otel-demo" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 512"><!--! Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M186.1 328.7c0 20.9-10.9 55.1-36.7 55.1s-36.7-34.2-36.7-55.1 10.9-55.1 36.7-55.1 36.7 34.2 36.7 55.1zM480 278.2c0 31.9-3.2 65.7-17.5 95-37.9 76.6-142.1 74.8-216.7 74.8-75.8 0-186.2 2.7-225.6-74.8-14.6-29-20.2-63.1-20.2-95 0-41.9 13.9-81.5 41.5-113.6-5.2-15.8-7.7-32.4-7.7-48.8 0-21.5 4.9-32.3 14.6-51.8 45.3 0 74.3 9 108.8 36 29-6.9 58.8-10 88.7-10 27 0 54.2 2.9 80.4 9.2 34-26.7 63-35.2 107.8-35.2 9.8 19.5 14.6 30.3 14.6 51.8 0 16.4-2.6 32.7-7.7 48.2 27.5 32.4 39 72.3 39 114.2zm-64.3 50.5c0-43.9-26.7-82.6-73.5-82.6-18.9 0-37 3.4-56 6-14.9 2.3-29.8 3.2-45.1 3.2-15.2 0-30.1-.9-45.1-3.2-18.7-2.6-37-6-56-6-46.8 0-73.5 38.7-73.5 82.6 0 87.8 80.4 101.3 150.4 101.3h48.2c70.3 0 150.6-13.4 150.6-101.3zm-82.6-55.1c-25.8 0-36.7 34.2-36.7 55.1s10.9 55.1 36.7 55.1 36.7-34.2 36.7-55.1-10.9-55.1-36.7-55.1z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    bhanuwealthy/otel-demo
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    /root
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../1-0-1/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Contributors
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../1-0.agenda/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Agenda
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../1-1.brief/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Evolution &amp; Feasibility
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../2.mltp/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    MLTP
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../3.arch/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Architecture
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../4.otel-components/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    OpenTelemetry Components
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../5.demo/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Demo
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../5.tuning-otel-comp/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Tuning OTEL components
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Z commands
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Z commands
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1docker-compose-mode" class="md-nav__link">
+    <span class="md-ellipsis">
+      1.Docker compose mode
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-kubernetes-mode" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Kubernetes mode
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Kubernetes mode">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1kind" class="md-nav__link">
+    <span class="md-ellipsis">
+      1.KinD
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2local-alias" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.Local alias
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3create-a-cluster" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.Create a cluster
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4deploy" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.Deploy
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5port-forward-for-local-access" class="md-nav__link">
+    <span class="md-ellipsis">
+      5.Port forward for local-access
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6standalone-services" class="md-nav__link">
+    <span class="md-ellipsis">
+      6.Standalone services
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#7auto-instrumentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      7.Auto instrumentation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#8check-traces" class="md-nav__link">
+    <span class="md-ellipsis">
+      8.Check traces
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#9cleanup" class="md-nav__link">
+    <span class="md-ellipsis">
+      9.Cleanup
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#transform-docker-compose-deployments" class="md-nav__link">
+    <span class="md-ellipsis">
+      Transform docker-compose -&gt; deployments
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1docker-compose-mode" class="md-nav__link">
+    <span class="md-ellipsis">
+      1.Docker compose mode
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-kubernetes-mode" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Kubernetes mode
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Kubernetes mode">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1kind" class="md-nav__link">
+    <span class="md-ellipsis">
+      1.KinD
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2local-alias" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.Local alias
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3create-a-cluster" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.Create a cluster
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4deploy" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.Deploy
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5port-forward-for-local-access" class="md-nav__link">
+    <span class="md-ellipsis">
+      5.Port forward for local-access
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6standalone-services" class="md-nav__link">
+    <span class="md-ellipsis">
+      6.Standalone services
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#7auto-instrumentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      7.Auto instrumentation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#8check-traces" class="md-nav__link">
+    <span class="md-ellipsis">
+      8.Check traces
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#9cleanup" class="md-nav__link">
+    <span class="md-ellipsis">
+      9.Cleanup
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#transform-docker-compose-deployments" class="md-nav__link">
+    <span class="md-ellipsis">
+      Transform docker-compose -&gt; deployments
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  
+  
+
+
+<style>
+  .highlight {
+  background-color: #f4f4f4;
+  padding: 5px;
+  border-radius: 5px 5px 15px 15px;
+  font-family: "Google Sans";
+  border-top: 15px solid black;
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+}
+.md-typeset blockquote  {
+  border-left-color: orange !important
+}
+</style>
+
+<h1 id="available-in-2-modes">Available in 2 modes<a class="headerlink" href="#available-in-2-modes" title="Permanent link">&para;</a></h1>
+<ul>
+<li>Docker compose mode</li>
+<li>KinD   cluster mode</li>
+</ul>
+<h2 id="1docker-compose-mode">1.Docker compose mode<a class="headerlink" href="#1docker-compose-mode" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>make<span class="w"> </span>otel
+</code></pre></div>
+<hr />
+<h2 id="2-kubernetes-mode">2. Kubernetes mode<a class="headerlink" href="#2-kubernetes-mode" title="Permanent link">&para;</a></h2>
+<blockquote>
+<p>NOTE: While experimenting this</p>
+<p>Do not use orbStack, it may be stop working due to resource demand and high network activity.</p>
+<p>Instead use  Docker-desktop</p>
+</blockquote>
+<h3 id="1kind">1.KinD<a class="headerlink" href="#1kind" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="l l-Scalar l-Scalar-Plain">$ cat local-setup/local-cluster.yaml</span>
+
+<span class="l l-Scalar l-Scalar-Plain">kind</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Cluster</span>
+<span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kind.x-k8s.io/v1alpha4</span>
+<span class="nt">networking</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">disableDefaultCNI</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w">   </span><span class="c1"># &lt;--- This is for custom CNI like cilium</span>
+<span class="w">  </span><span class="nt">podSubnet</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">192.168.0.0/16</span>
+<span class="nt">nodes</span><span class="p">:</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">role</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">control-plane</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">role</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">worker</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">role</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">worker</span>
+</code></pre></div>
+<h3 id="2local-alias">2.Local alias<a class="headerlink" href="#2local-alias" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="nb">alias</span><span class="w"> </span><span class="nv">ktl</span><span class="o">=</span><span class="s2">&quot;kubectl&quot;</span>
+<span class="nb">alias</span><span class="w"> </span><span class="nv">kctx</span><span class="o">=</span><span class="s2">&quot;kubectx&quot;</span>
+</code></pre></div>
+<h3 id="3create-a-cluster">3.Create a  cluster<a class="headerlink" href="#3create-a-cluster" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>$ kind create cluster \
+  --config local-setup/local-cluster.yaml \
+  --name otel-demo-cluster
+
+#Confirm
+&gt; kctx
+kind-otel-demo-cluster &lt;---------
+wealthy
+</code></pre></div>
+<h3 id="4deploy">4.Deploy<a class="headerlink" href="#4deploy" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>ktl create ns otel
+ktl -n otel apply -f kind-deployments
+</code></pre></div>
+<h3 id="5port-forward-for-local-access">5.Port forward for local-access<a class="headerlink" href="#5port-forward-for-local-access" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>$ ktl get svc -n otel
+
+$ ktl -n otel port-forward svc/grafana 3000:grafana-ui &gt; /dev/null &amp;
+$ ktl -n otel port-forward svc/otelcol 4317:otel-col &gt; /dev/null &amp;
+
+# kill
+$ lsof -i:3000 -t | xargs kill -9
+$ lsof -i:4317 -t | xargs kill -9
+</code></pre></div>
+<h3 id="6standalone-services">6.Standalone services<a class="headerlink" href="#6standalone-services" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># python-app</span>
+$<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>py-project
+$<span class="w"> </span><span class="nb">source</span><span class="w"> </span>venv-otel-demo/bin/activate
+
+$<span class="w"> </span>make<span class="w"> </span>deps<span class="w"> </span>run
+<span class="c1"># running server on http://localhost:8000/docs/</span>
+$<span class="w"> </span>deactivate
+
+
+<span class="c1"># ------</span>
+<span class="c1"># Go binary</span>
+$<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>go-project<span class="w">  </span><span class="c1"># From project root</span>
+$<span class="w"> </span>make<span class="w"> </span>run
+<span class="c1"># running server on http://localhost:8080</span>
+
+<span class="c1"># -----</span>
+<span class="c1"># Try the apis</span>
+$<span class="w"> </span>curl<span class="w"> </span>-s<span class="w"> </span>http://localhost:8000/ping/<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq
+$<span class="w"> </span>curl<span class="w"> </span>-s<span class="w"> </span>http://localhost:8000/propagate/<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq
+
+$<span class="w"> </span>curl<span class="w"> </span>-s<span class="w"> </span>http://localhost:8080/api/ping/<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq
+</code></pre></div>
+<h3 id="7auto-instrumentation">7.Auto instrumentation<a class="headerlink" href="#7auto-instrumentation" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code># Load generator
+$ ktl apply -f https://raw.githubusercontent.com/keyval-dev/simple-demo/main/kubernetes/deployment.yaml
+
+# Install auto-instrumentor
+$ brew install keyval-dev/homebrew-odigos-cli/odigos
+$ odigos install
+
+$ odigos ui
+
+# Then configure the destination as OTLP gRPC with endpoint: otelcol:4317
+# Close odigos
+</code></pre></div>
+<h3 id="8check-traces">8.Check traces<a class="headerlink" href="#8check-traces" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>OpenLens -&gt;  GrafanaPod -&gt; Auto open portForward
+</code></pre></div>
+<h3 id="9cleanup">9.Cleanup<a class="headerlink" href="#9cleanup" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>$ ktl delete ns otel
+
+$ kind delete cluster --name otel-demo-cluster
+</code></pre></div>
+<hr />
+<h3 id="transform-docker-compose-deployments">Transform <code>docker-compose -&gt; deployments</code><a class="headerlink" href="#transform-docker-compose-deployments" title="Permanent link">&para;</a></h3>
+<blockquote>
+<p>Already in-place
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>mkdir<span class="w"> </span>kind-deployments
+$<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>kind-deployments
+$<span class="w"> </span><span class="nv">MONGO_ROOT</span><span class="o">=</span>dummy<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>kompose<span class="w"> </span>--file<span class="w"> </span>../local-setup/local-dockercompose.yaml<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>convert<span class="w"> </span>--profile<span class="w"> </span>all
+</code></pre></div></p>
+</blockquote>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../5.tuning-otel-comp/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Tuning OTEL components">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Tuning OTEL components
+              </div>
+            </div>
+          </a>
+        
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+      <div class="md-progress" data-md-component="progress" role="progressbar"></div>
+    
+    
+    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.footer", "navigation.prune", "navigation.path", "navigation.instant", "navigation.tracking", "navigation.instant.preview", "navigation.instant.progress", "navigation.instant.prefetch"], "search": "../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.dd8806f2.min.js"></script>
+      
+    
+  </body>
+</html>
